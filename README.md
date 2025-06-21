@@ -17,18 +17,6 @@ make clean     # Delete build/
 make rebuild   # Full clean + rebuild
 ```
 
-# Why Build a Database?
-
-Building one from scratch teaches:
-
-* How write-ahead logging ensures durability
-* How in-memory structures like memtables enable fast writes
-* How on-disk SSTables or B-tree pages are structured and read
-* How compaction or page splitting works in practice
-* How concurrency, transactions, and crash recovery are implemented
-
-It's also an excuse for me to learn C++.
-
 # Project overview
 
 This project is divided into four phases:
