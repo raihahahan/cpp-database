@@ -2,6 +2,21 @@
 
 I've recently started learning C++ and decided to build a relational database from scratch. This inspiration came from Martin Kleppmann’s Designing Data-Intensive Applications (DDIA). The early chapters introduced the internal mechanics of storage engines like Bitcask, LevelDB and RocksDB. It dives into the database structures of databases: log-structured merge trees (LSM-trees) and B-trees.
 
+# Pre-requisites
+- CMake – for configuring the build system
+- Make
+- C++20-compatible compiler
+  - macOS: Apple Clang
+  - Linux: GCC or Clang
+
+# Setup
+```
+make           # Build (creates build/ and runs CMake+Make)
+make run       # Build and run db_main
+make clean     # Delete build/
+make rebuild   # Full clean + rebuild
+```
+
 # Why Build a Database?
 
 Building one from scratch teaches:
