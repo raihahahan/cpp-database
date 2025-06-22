@@ -1,5 +1,5 @@
 #include "db/database.hpp"
-#include "storage/lsm/lsm_engine.hpp"
+#include "storage/lsm/engine/lsm_engine.hpp"
 #include <iostream>
 
 int main() {
