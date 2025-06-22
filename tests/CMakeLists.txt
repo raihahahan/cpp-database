@@ -1,7 +1,16 @@
-file(GLOB TEST_SOURCES *.cpp)
+cmake_minimum_required(VERSION 3.16)
 
-foreach(test_src ${TEST_SOURCES})
-    get_filename_component(test_name ${test_src} NAME_WE)
-    add_executable(${test_name} ${test_src})
-    target_link_libraries(${test_name} PRIVATE db_core)
-endforeach()
+project(tests)
+
+find_package(Catch2 3 REQUIRED)
+file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*_test.cpp")
+message(STATUS "Test sources: ${TEST_SOURCES}")
+add_executable(tests ${TEST_SOURCES})
+
+target_compile_features(tests PUBLIC cxx_std_20)
+target_include_directories(tests PRIVATE ${PROJECT_SOURCE_DIR}/src)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain db_core)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(tests)
