@@ -7,7 +7,7 @@
 
 namespace fs = std::filesystem;
 
-WAL::WAL() : filepath(WAL_PATH) {
+WAL::WAL(std::optional<fs::path> pathOverride) : filepath(pathOverride.value_or(WAL_PATH)) {
     // ensure path exists
     fs::create_directories(filepath.parent_path());
     

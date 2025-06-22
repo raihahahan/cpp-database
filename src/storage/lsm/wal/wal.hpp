@@ -20,7 +20,7 @@ struct WalRecord {
 
 class WAL {
 public:
-    explicit WAL();
+    explicit WAL(std::optional<std::filesystem::path> pathOverride = std::nullopt);
     ~WAL();
 
     WAL(const WAL&)= delete;

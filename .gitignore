@@ -33,6 +33,6 @@
 
 .vscode
 build/
-data/
+data*/
 Catch2/
 Testing/

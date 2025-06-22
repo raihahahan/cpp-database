@@ -4,7 +4,10 @@ project(tests)
 
 find_package(Catch2 3 REQUIRED)
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*_test.cpp")
-message(STATUS "Test sources: ${TEST_SOURCES}")
+foreach(test_src ${TEST_SOURCES})
+    message(STATUS "Test source added: ${test_src}")
+endforeach()
+
 add_executable(tests ${TEST_SOURCES})
 
 target_compile_features(tests PUBLIC cxx_std_20)
