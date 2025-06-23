@@ -9,6 +9,7 @@ public:
     void remove(const std::string& key);
     std::optional<std::string> get(const std::string& key) const;
     std::vector<std::pair<std::string, std::string>> getRange(int limit = -1) const;
+    void clear();
 
 private:
     SkipList<std::string, std::string> kv;

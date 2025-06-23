@@ -50,7 +50,6 @@ TEST_CASE("[lsm_engine]: WAL replay on recovery") {
     // clean up old WAL
     path walPath = "data-recovery/db.wal";
     remove_all(walPath.parent_path());
-    create_directories(walPath.parent_path());
 
     {
         // first engine: write to WAL and memtable

@@ -139,3 +139,15 @@ void WAL::replay(std::function<void(const WalRecord&)> handler) {
 
     std::fclose(fp);
 }
+
+void WAL::clear() {
+    if (fp) {
+        std::fclose(fp);
+        fp = nullptr;
+    }
+    std::filesystem::remove(filepath);
+    fp = std::fopen(filepath.string().c_str(), "ab");
+    if (!fp) {
+        throw std::runtime_error("Failed to reopen WAL after reset.");
+    }
+}

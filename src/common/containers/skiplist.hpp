@@ -24,7 +24,7 @@ private:
     };
 
     static constexpr int MAX_LEVEL = 16; // max levels in the skip list
-    float probability = 0.5f; // probability to promote level
+    const float probability = 0.5f; // probability to promote level
     int level = 1; // current highest level in list
 
     std::shared_ptr<Node> head; // head node with MAX_LEVEL pointers
@@ -167,5 +167,10 @@ public:
             curr = curr->forward[0];
         }
         return count;
+    }
+    
+    void clear() {
+        head = std::make_shared<Node>(K{}, V{}, MAX_LEVEL);
+        level = 1;
     }
 };

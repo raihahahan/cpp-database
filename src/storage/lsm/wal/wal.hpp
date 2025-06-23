@@ -32,6 +32,7 @@ public:
 
     void append(WalRecord&& record);
     void replay(std::function<void(const WalRecord&)> handler);
+    void clear();
 
 private:
     std::filesystem::path filepath;
