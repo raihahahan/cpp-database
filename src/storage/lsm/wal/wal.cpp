@@ -41,7 +41,7 @@ WAL& WAL::operator=(WAL&& other) noexcept {
     return *this;
 };
 
-void WAL::append(const WalRecord& record) {
+void WAL::append(WalRecord&& record) {
     auto data = record.serialize();
     std::fwrite(data.data(), 1, data.size(), fp);
     std::fflush(fp);

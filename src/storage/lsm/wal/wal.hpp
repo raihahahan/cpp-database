@@ -29,7 +29,7 @@ public:
     WAL(WAL&& other) noexcept;
     WAL& operator=(WAL&& other) noexcept;
 
-    void append(const WalRecord& record);
+    void append(WalRecord&& record);
 
 private:
     std::filesystem::path filepath;

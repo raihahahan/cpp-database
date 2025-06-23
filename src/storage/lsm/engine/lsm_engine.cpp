@@ -10,26 +10,18 @@ LSMEngine::~LSMEngine() {
 }
 
 void LSMEngine::put(const std::string& key, const std::string& value) {
-    WalRecord record{
-        .opType = OpType::CREATE,
-        .key = key,
-        .value = value
-    };
-    wal.append(record);
+    wal.append(WalRecord{OpType::CREATE, key, value});
+    memTable.put(key, value);
     std::cout << "Put: " << key << " -> " << value << "\n";
 }
 
 std::optional<std::string> LSMEngine::get(const std::string& key) {
     std::cout << "Get: " << key << "\n";
-    return std::nullopt;
+    return memTable.get(key);
 }
 
 void LSMEngine::remove(const std::string& key) {
-    WalRecord record {
-        .opType = OpType::DELETE,
-        .key = key,
-        .value = ""
-    };
-    wal.append(record);
+    wal.append(WalRecord{OpType::DELETE, key, ""});
+    memTable.remove(key);
     std::cout << "Remove: " << key << "\n";
 }
