@@ -1,6 +1,8 @@
 # Introduction
 
-This project aims to build a relational database from scratch, starting with an initial log-structured merge trees (LSM-trees) implementation, followed by B-trees.
+This project aims to build a relational database from scratch, starting with an initial log-structured merge trees (LSM-trees) key-value implementation, followed by B-trees, then SQL and ACID abstractions.
+
+Current progress: key-value database with WAL, in-memory sorted map and flushing to disk.
 
 # Pre-requisites
 
