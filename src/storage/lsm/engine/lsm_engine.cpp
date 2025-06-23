@@ -47,6 +47,10 @@ std::optional<std::string> LSMEngine::get(const std::string& key) {
     return memTable.get(key);
 }
 
+std::vector<std::pair<std::string, std::string>> LSMEngine::getRange(int limit) {
+    return memTable.getRange(limit);
+}
+
 void LSMEngine::remove(const std::string& key) {
     wal.append(WalRecord{OpType::DELETE, key, ""});
     memTable.remove(key);

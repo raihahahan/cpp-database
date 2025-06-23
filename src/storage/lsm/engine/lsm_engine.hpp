@@ -10,6 +10,7 @@ public:
 
     void put(const std::string& key, const std::string& value) override;
     std::optional<std::string> get(const std::string& key) override;
+    std::vector<std::pair<std::string, std::string>> getRange(int limit = -1) override;
     void remove(const std::string& key) override;
 
 private:

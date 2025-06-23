@@ -12,6 +12,6 @@ std::optional<std::string> Memtable::get(const std::string& key) const {
     return kv.get(key);
 }
 
-std::vector<std::pair<std::string, std::string>> Memtable::sortedEntries() const {
-    return kv.entries();
+std::vector<std::pair<std::string, std::string>> Memtable::getRange(int limit) const {
+    return kv.entries(limit);
 }

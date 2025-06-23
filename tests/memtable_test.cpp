@@ -45,7 +45,7 @@ TEST_CASE("[memtable]: Basic put/get/remove operations") {
         mem.put("a", "apple");
         mem.put("b", "banana");
 
-        auto entries = mem.sortedEntries();
+        auto entries = mem.getRange(-1);
         REQUIRE(entries.size() == 3);
         REQUIRE(entries[0].first == "a");
         REQUIRE(entries[1].first == "b");
