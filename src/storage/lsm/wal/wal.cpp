@@ -3,6 +3,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include "../../../config.hpp"
 
 namespace fs = std::filesystem;
@@ -79,11 +80,17 @@ std::vector<uint8_t> WalRecord::serialize() const {
 }
 
 // read a record from a WAL file
-WalRecord WalRecord::deserialize(FILE* fp) {
+std::optional<WalRecord> WalRecord::deserialize(FILE* fp) {
     WalRecord record;
     uint8_t op;
 
+    // check if we're already at EOF
+    if (std::feof(fp)) {
+        return std::nullopt;
+    }
+
     if (std::fread(&op, sizeof(op), 1, fp) != 1) {
+        if (std::feof(fp)) return std::nullopt;
         throw std::runtime_error("Failed to read opType from WAL.");
     }
     record.opType = static_cast<OpType>(op);
@@ -109,4 +116,26 @@ WalRecord WalRecord::deserialize(FILE* fp) {
     }
 
     return record;
+}
+
+
+void WAL::replay(std::function<void(const WalRecord&)> handler) {
+    FILE* fp = std::fopen(filepath.string().c_str(), "rb");
+    if (!fp) return;
+
+    try {
+        while (true) {
+            std::optional<WalRecord> rec = WalRecord::deserialize(fp);
+            if (rec == std::nullopt) {
+                std::cout << "WAL Empty." << std::endl;
+                return;
+            }
+
+            handler(rec.value());
+        }
+    } catch (const std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+
+    std::fclose(fp);
 }

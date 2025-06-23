@@ -32,8 +32,8 @@ TEST_CASE("[wal]: WAL append and deserialize") {
         // read back
         FILE* fp = std::fopen(testPath.string().c_str(), "rb");
         REQUIRE(fp != nullptr);
-        WalRecord out1 = WalRecord::deserialize(fp);
-        WalRecord out2 = WalRecord::deserialize(fp);
+        WalRecord out1 = WalRecord::deserialize(fp).value();
+        WalRecord out2 = WalRecord::deserialize(fp).value();
         std::fclose(fp);
 
         REQUIRE(out1.opType == OpType::CREATE);

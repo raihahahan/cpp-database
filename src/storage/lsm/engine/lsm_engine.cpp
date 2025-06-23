@@ -2,6 +2,33 @@
 #include <iostream>
 
 LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath) : wal(std::move(walPath)) {
+    wal.replay([this](const WalRecord& rec) {
+        switch (rec.opType)
+        {
+        case OpType::CREATE:
+            if (!memTable.get(rec.key).has_value()) {
+                memTable.put(rec.key, rec.value);
+                std::cout << "[WAL Replay]: Insert " << rec.key << ", " << rec.value << std::endl;
+            }
+            break;
+        
+        case OpType::UPDATE:
+            if (memTable.get(rec.key).has_value()) {
+                memTable.put(rec.key, rec.value);
+                std::cout << "[WAL Replay]: Update " << rec.key << ", " << rec.value << std::endl;
+            }
+            break;
+        
+        case OpType::DELETE:
+            memTable.remove(rec.key);
+            std::cout << "[WAL Replay]: Delete " << rec.key << ", " << rec.value << std::endl;
+            break;
+
+        default:
+            break;
+        }
+    });
+
     std::cout << "LSMEngine created\n";
 }
 
