@@ -14,3 +14,7 @@ std::optional<std::string> Database::get(const std::string& key) {
 void Database::remove(const std::string& key) {
     engine_->remove(key);
 }
+
+std::vector<std::pair<std::string, std::string>> Database::getRange(int limit) {
+    return engine_->getRange(limit);
+}

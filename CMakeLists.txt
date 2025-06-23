@@ -11,5 +11,7 @@ if(ENABLE_TESTING)
     add_subdirectory(Catch2)
     add_subdirectory(tests)
 endif()
+add_executable(db_cli src/cli/main.cpp)
+target_link_libraries(db_cli PRIVATE db_core)
 add_subdirectory(src)
 
