@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <string>
 #include <filesystem>
+#include "../memtable/memtable.hpp"
 
 enum OpType {
     CREATE,
@@ -15,7 +16,7 @@ struct WalRecord {
     std::string key;
     std::string value;
     std::vector<uint8_t> serialize() const;
-    static WalRecord deserialize(FILE* fp);
+    static std::optional<WalRecord> deserialize(FILE* fp);
 };
 
 class WAL {
@@ -29,7 +30,8 @@ public:
     WAL(WAL&& other) noexcept;
     WAL& operator=(WAL&& other) noexcept;
 
-    void append(const WalRecord& record);
+    void append(WalRecord&& record);
+    void replay(std::function<void(const WalRecord&)> handler);
 
 private:
     std::filesystem::path filepath;

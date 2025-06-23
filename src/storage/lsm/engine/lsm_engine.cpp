@@ -2,6 +2,33 @@
 #include <iostream>
 
 LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath) : wal(std::move(walPath)) {
+    wal.replay([this](const WalRecord& rec) {
+        switch (rec.opType)
+        {
+        case OpType::CREATE:
+            if (!memTable.get(rec.key).has_value()) {
+                memTable.put(rec.key, rec.value);
+                std::cout << "[WAL Replay]: Insert " << rec.key << ", " << rec.value << std::endl;
+            }
+            break;
+        
+        case OpType::UPDATE:
+            if (memTable.get(rec.key).has_value()) {
+                memTable.put(rec.key, rec.value);
+                std::cout << "[WAL Replay]: Update " << rec.key << ", " << rec.value << std::endl;
+            }
+            break;
+        
+        case OpType::DELETE:
+            memTable.remove(rec.key);
+            std::cout << "[WAL Replay]: Delete " << rec.key << ", " << rec.value << std::endl;
+            break;
+
+        default:
+            break;
+        }
+    });
+
     std::cout << "LSMEngine created\n";
 }
 
@@ -10,26 +37,18 @@ LSMEngine::~LSMEngine() {
 }
 
 void LSMEngine::put(const std::string& key, const std::string& value) {
-    WalRecord record{
-        .opType = OpType::CREATE,
-        .key = key,
-        .value = value
-    };
-    wal.append(record);
+    wal.append(WalRecord{OpType::CREATE, key, value});
+    memTable.put(key, value);
     std::cout << "Put: " << key << " -> " << value << "\n";
 }
 
 std::optional<std::string> LSMEngine::get(const std::string& key) {
     std::cout << "Get: " << key << "\n";
-    return std::nullopt;
+    return memTable.get(key);
 }
 
 void LSMEngine::remove(const std::string& key) {
-    WalRecord record {
-        .opType = OpType::DELETE,
-        .key = key,
-        .value = ""
-    };
-    wal.append(record);
+    wal.append(WalRecord{OpType::DELETE, key, ""});
+    memTable.remove(key);
     std::cout << "Remove: " << key << "\n";
 }

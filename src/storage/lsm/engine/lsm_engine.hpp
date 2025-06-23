@@ -1,6 +1,7 @@
 #pragma once
 #include "../../engine.hpp"
 #include "../wal/wal.hpp"
+#include "../memtable/memtable.hpp"
 
 class LSMEngine : public StorageEngine {
 public:
@@ -13,4 +14,5 @@ public:
 
 private:
     WAL wal;
+    Memtable memTable;
 };
