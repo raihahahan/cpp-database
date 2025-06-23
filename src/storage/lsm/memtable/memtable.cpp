@@ -15,3 +15,7 @@ std::optional<std::string> Memtable::get(const std::string& key) const {
 std::vector<std::pair<std::string, std::string>> Memtable::getRange(int limit) const {
     return kv.entries(limit);
 }
+
+void Memtable::clear() {
+    kv.clear();
+}
