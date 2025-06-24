@@ -1,6 +1,6 @@
 #pragma once
 #include "../../engine.hpp"
-#include "../wal/wal.hpp"
+#include "../../wal/wal.hpp"
 #include "../memtable/memtable.hpp"
 #include "../sstable/segment_manager.hpp"
 #include "../../../config.hpp"

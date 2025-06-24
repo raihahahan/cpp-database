@@ -1,6 +1,6 @@
 #include "catch2/catch_test_macros.hpp"
 #include "../src/storage/lsm/engine/lsm_engine.hpp"
-#include "../src/storage/lsm/wal/wal.hpp"
+#include "../src/storage/wal/wal.hpp"
 #include "../src/config.hpp"
 
 #include <filesystem>
