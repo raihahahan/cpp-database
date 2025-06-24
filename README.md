@@ -69,6 +69,7 @@ Edit config in `config.hpp` before building.
 cd build
 ./db_main # run the daemon process
 ./db_cli  # run the cli to interact with the daemon process
+./stess_test # stress test the daemon
 ```
 
 # Project overview
