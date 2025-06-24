@@ -132,7 +132,7 @@ void SegmentManager::compact() {
 
     std::ofstream out(compactedPath, std::ios::binary);
     if (!out) {
-        std::cerr << "[Compaction] Failed to open compacted segment file.\n";
+        std::cerr << "[Compaction] Failed to open compacted segment file" << compactedFilename << "\n";
         return;
     }
 

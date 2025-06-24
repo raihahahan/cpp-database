@@ -1,9 +1,13 @@
 # Introduction
+
 The aim of this project is to build a durable key-value database supporting two different storage engines: LSM-tree and B-tree.
+
+From Gemini: An LSM tree (Log-Structured Merge-Tree) is a data structure optimized for write-heavy workloads, commonly used in databases and file systems. It prioritizes efficient sequential writes by buffering data in memory (Memtable) before flushing it to disk in sorted order (SSTables). This approach minimizes random disk I/O, which is slower than sequential access.
 
 ([Link to writeup](https://mraihan.dev/blog/LSM-tree-Key-Value-Store-in-CPP))
 
 ## Current Progress and Features
+
 ### LSM-tree version ✅
 
 1. Memtable with skiplist ✅
@@ -16,10 +20,11 @@ The aim of this project is to build a durable key-value database supporting two 
 2. Page manager
 3. Buffer manager
 
-### Common
+### Common ✅
+
 1. Write-ahead log ✅
 2. CLI ✅
-3. Async network I/O
+3. Turn it into a daemon process ✅
 
 # Pre-requisites
 
@@ -57,21 +62,24 @@ make rebuild   # Full clean + rebuild
 ```
 
 ## 3. Test CLI
-Edit config in `config.hpp`.
+
+Edit config in `config.hpp` before building.
+
 ```
 cd build
-./db_cli
+./db_main # run the daemon process
+./db_cli  # run the cli to interact with the daemon process
 ```
 
 # Project overview
 
 This project is divided into three phases:
 
-1. **Phase 1:** Key-Value Store with LSM-Tree Storage (current)
+1. **Phase 1:** Key-Value Store with LSM-Tree Storage ✅
 2. **Phase 2:** Key-Value Store with B-Tree Storage
-3. **Phase 3:** Turn it into a daemon process and allow communication via sockets
+3. **Phase 3:** Turn it into a daemon process and allow communication via sockets ✅
 
-# Phase 1: Key-Value Store with LSM-Tree Storage
+# Phase 1: Key-Value Store with LSM-Tree Storage ✅
 
 The first step is to build a basic key-value store using an LSM-tree storage engine, similar to LevelDB.
 
@@ -102,5 +110,6 @@ The B-tree structure enables efficient lookups and range scans, with nodes align
 - **Pager:** Manages reading/writing pages to disk
 - **Buffer Manager**: Caches pages in memory and handles eviction
 
-# Phase 3: Daemon process
+# Phase 3: Daemon process ✅
+
 The goal is to allow this database to run as a background process, and the CLI tool allows users to choose the storage engine (B-tree or LSM-tree) and connect to the database via sockets.
