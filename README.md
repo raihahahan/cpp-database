@@ -1,6 +1,8 @@
 # Introduction
 The aim of this project is to build a durable key-value database supporting two different storage engines: LSM-tree and B-tree.
 
+([Link to writeup](https://mraihan.dev/blog/LSM-tree-Key-Value-Store-in-CPP))
+
 ## Current Progress and Features
 ### LSM-tree version ✅
 
