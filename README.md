@@ -55,6 +55,7 @@ make rebuild   # Full clean + rebuild
 ```
 
 ## 3. Test CLI
+Edit config in `config.hpp`.
 ```
 cd build
 ./db_cli
