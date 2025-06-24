@@ -62,7 +62,7 @@ cd build
 
 # Project overview
 
-This project is divided into two phases:
+This project is divided into three phases:
 
 1. **Phase 1:** Key-Value Store with LSM-Tree Storage (current)
 2. **Phase 2:** Key-Value Store with B-Tree Storage
