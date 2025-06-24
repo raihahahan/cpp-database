@@ -5,6 +5,8 @@
 #include <iostream>
 #include <chrono>
 #include <sstream>
+#include <string>
+#include <map>
 
 std::string SegmentManager::generateSegmentFilename() const {
     auto now = std::chrono::system_clock::now().time_since_epoch();
@@ -107,4 +109,56 @@ std::vector<std::pair<std::string, std::string>> SegmentManager::getRange(int li
         if (auto val = get(key)) result.emplace_back(key, *val);
     }
     return result;
+}
+
+void SegmentManager::compact() {
+    std::cout << "[Compaction] Starting compaction...\n";
+
+    // 1. read all entries from indexMap
+    auto allEntries = getRange();
+
+    // 2. sort and deduplicate by key, keeping latest (rightmost) entry
+    std::map<std::string, std::string> latest;  // overwrites duplicates
+    for (const auto& [key, value] : allEntries) {
+        latest[key] = value;
+    }
+
+    // 3. write to new compacted segment
+    std::string compactedFilename = generateSegmentFilename();
+    auto compactedPath = segmentDir / compactedFilename;
+
+    std::ofstream out(compactedPath, std::ios::binary);
+    if (!out) {
+        std::cerr << "[Compaction] Failed to open compacted segment file.\n";
+        return;
+    }
+
+    // 4. rebuild new index map
+    indexMap.clear(); 
+
+    for (const auto& [key, value] : latest) {
+        std::streampos offset = out.tellp();
+
+        uint32_t kSize = key.size();
+        uint32_t vSize = value.size();
+
+        out.write(reinterpret_cast<const char*>(&kSize), sizeof(kSize));
+        out.write(key.data(), kSize);
+        out.write(reinterpret_cast<const char*>(&vSize), sizeof(vSize));
+        out.write(value.data(), vSize);
+
+        indexMap[key] = { compactedPath.string(), offset };
+    }
+
+    out.close();
+
+    // 5. delete all old segment files
+    for (const auto& entry : std::filesystem::directory_iterator(segmentDir)) {
+        if (entry.path() != compactedPath && entry.path().extension() == ".dat") {
+            std::filesystem::remove(entry.path());
+        }
+    }
+
+    std::cout << "[Compaction] Finished. Compacted into " << compactedPath << " with "
+              << latest.size() << " entries.\n";
 }

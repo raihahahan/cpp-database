@@ -4,7 +4,12 @@
 #include <string>
 #include <map>
 
-LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath, const size_t threshold) : wal(std::move(walPath)), FLUSH_THRESHOLD(threshold) {
+LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath,
+                        const size_t threshold,
+                        const int compactionInterval) : 
+                    wal(std::move(walPath)), 
+                    FLUSH_THRESHOLD(threshold),
+                    COMPACTION_INTERVAL_MS(compactionInterval) {
     segmentManager.loadSegments(SSTABLE_DIR);
     wal.replay([this](const WalRecord& rec) {
         switch (rec.opType)
@@ -32,11 +37,14 @@ LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath, const size_t 
             break;
         }
     });
+    startCompactionThread();
 
     std::cout << "LSMEngine created\n";
 }
 
 LSMEngine::~LSMEngine() {
+    stopCompaction.store(true);
+    if (compactionThread.joinable()) compactionThread.join();
     std::cout << "LSMEngine destroyed\n";
 }
 
@@ -89,4 +97,13 @@ void LSMEngine::maybeFlush() {
         wal.clear();
         memTable.clear();
     }
+}
+
+void LSMEngine::startCompactionThread() {
+    compactionThread = std::thread([this]() {
+        while (!stopCompaction.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(COMPACTION_INTERVAL_MS));
+            segmentManager.compact();
+        }
+    });
 }

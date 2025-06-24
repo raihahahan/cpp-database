@@ -3,3 +3,4 @@
 constexpr const char* WAL_PATH = "data/db.wal";
 constexpr const char* SSTABLE_DIR = "data/segments";
 constexpr const int LSM_FLUSH_THRESHOLD = 100;
+constexpr const int LSM_COMPACTION_INTERVAL_MS = 10000;
