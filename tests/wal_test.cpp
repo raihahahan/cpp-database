@@ -1,5 +1,5 @@
 #include "catch2/catch_test_macros.hpp"
-#include "../src/storage/lsm/wal/wal.hpp"
+#include "../src/storage/wal/wal.hpp"
 #include <filesystem>
 #include <fstream>
 #include <cstdio>

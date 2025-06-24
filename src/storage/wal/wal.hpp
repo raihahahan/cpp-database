@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <string>
 #include <filesystem>
-#include "../memtable/memtable.hpp"
 
 enum OpType {
     CREATE,

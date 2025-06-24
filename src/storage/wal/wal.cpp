@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include "../../../config.hpp"
+#include "../../config.hpp"
 
 namespace fs = std::filesystem;
 
