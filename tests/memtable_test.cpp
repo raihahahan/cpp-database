@@ -1,5 +1,6 @@
 #include "catch2/catch_test_macros.hpp"
 #include "../src/storage/lsm/memtable/memtable.hpp"
+#include "../src/config.hpp"
 
 TEST_CASE("[memtable]: Basic put/get/remove operations") {
     Memtable mem;
@@ -37,7 +38,7 @@ TEST_CASE("[memtable]: Basic put/get/remove operations") {
         mem.remove("a");
 
         auto a = mem.get("a");
-        REQUIRE_FALSE(a.has_value());
+        REQUIRE(a == TOMBSTONE_MARKER);
     }
 
     SECTION("entries are sorted") {

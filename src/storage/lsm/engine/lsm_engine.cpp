@@ -1,5 +1,6 @@
 #include "lsm_engine.hpp"
 #include "../../../config.hpp"
+#include "../../../common/utils/file_utils.hpp"
 #include <iostream>
 #include <string>
 #include <map>
@@ -58,8 +59,19 @@ void LSMEngine::put(const std::string& key, const std::string& value) {
 
 std::optional<std::string> LSMEngine::get(const std::string& key) {
     std::cout << "Get: " << key << "\n";
-    if (auto val = memTable.get(key)) return val;
-    return segmentManager.get(key);
+    if (auto val = memTable.get(key)) {
+        if (val.has_value() && isTombstone(*val)) {
+            return std::nullopt;
+        }
+        return val;
+    }
+    if (auto val = segmentManager.get(key)) {
+        if (val.has_value() && isTombstone(*val)) {
+            return std::nullopt;
+        }
+        return val;
+    }
+    return std::nullopt;
 }
 
 std::vector<std::pair<std::string, std::string>> LSMEngine::getRange(int limit) {
@@ -73,6 +85,7 @@ std::vector<std::pair<std::string, std::string>> LSMEngine::getRange(int limit) 
 
     std::vector<std::pair<std::string, std::string>> result;
     for (const auto& [k, v] : merged) {
+        if (isTombstone(v)) continue;
         if (limit != -1 && result.size() >= static_cast<size_t>(limit)) break;
         result.emplace_back(k, v);
     }
