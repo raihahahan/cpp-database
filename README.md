@@ -1,8 +1,23 @@
 # Introduction
+The aim of this project is to build a durable key-value database supporting two different storage engines: LSM-tree and B-tree.
 
-This project aims to build a relational database from scratch, starting with an initial log-structured merge trees (LSM-trees) key-value implementation, followed by B-trees, then SQL and ACID abstractions.
+## Current Progress and Features
+### LSM-tree version (current work in progress)
 
-Current progress: key-value database with WAL, in-memory sorted map and flushing to disk.
+1. Memtable with skiplist ✅
+2. Periodic flush to disk with segments of SSTables ✅
+3. Periodic compaction to merge the SSTable segments
+
+### B-tree version (pending)
+
+1. B-tree data structure
+2. Page manager
+3. Buffer manager
+
+### Common
+1. Write-ahead log ✅
+2. CLI ✅
+3. Async network I/O
 
 # Pre-requisites
 
@@ -47,12 +62,11 @@ cd build
 
 # Project overview
 
-This project is divided into four phases:
+This project is divided into two phases:
 
 1. **Phase 1:** Key-Value Store with LSM-Tree Storage (current)
 2. **Phase 2:** Key-Value Store with B-Tree Storage
-3. **Phase 3:** Adding a relational layer
-4. **Phase 4:** SQL and Query Execution
+3. **Phase 3:** Turn it into a daemon process and allow communication via sockets
 
 # Phase 1: Key-Value Store with LSM-Tree Storage
 
@@ -67,7 +81,7 @@ The first step is to build a basic key-value store using an LSM-tree storage eng
 
 The get path checks the memtable, then recent SSTables, and so on. Each SSTable has a sparse in-memory index to reduce scan overhead. This gives me a fast, durable, and append-only key-value store.
 
-# Phase 2 Key-Value Store with B-Tree Storage
+# Phase 2: Key-Value Store with B-Tree Storage
 
 Once the LSM version is working, I plan to add a second storage engine based on B-trees. This engine will share the same StorageEngine interface as the LSM version.
 
@@ -75,7 +89,7 @@ Once the LSM version is working, I plan to add a second storage engine based on 
 
 - Better read performance for point and range queries
 - More suitable for in-place updates
-- Serves as a foundation for future ACID semantics (via pages and MVCC)
+- Serves as a foundation for future ACID semantics (via pages and MVCC) (future plans to fork this repo to create a relational version)
 
 ## Components
 
@@ -85,28 +99,5 @@ The B-tree structure enables efficient lookups and range scans, with nodes align
 - **Pager:** Manages reading/writing pages to disk
 - **Buffer Manager**: Caches pages in memory and handles eviction
 
-# Phase 3: Adding a Relational Layer
-
-At this point, I will build a logical layer on top of the key-value storage engine to support relational features like:
-
-- Tables and schemas
-- Row/column storage layout
-- Transactions and isolation
-- SQL-like APIs
-
-This turns the storage engine into an actual database, with support for structured data and multiple tables.
-
-## Components
-
-This phase introduces more complex internals such as concurrency control and crash recovery at the logical level.
-
-- **Table Abstraction:** Maps table names to key ranges or root pages
-- **Catalog:** Stores schema metadata
-- **Tuple Encoder:** Packs and unpacks rows into storage blocks
-- **Transaction Manager:** Assigns transaction IDs and handles commits/rollbacks
-- **MVCC Layer:** Supports concurrent readers and writers
-- **Lock Manager or Optimistic Concurrency Control**
-
-# Phase 4: SQL and Query Execution
-
-Eventually, I'll add a SQL parser and basic query planner/executor. This would allow users to interact with the database using SQL.
+# Phase 3: Daemon process
+The goal is to allow this database to run as a background process, and the CLI tool allows users to choose the storage engine (B-tree or LSM-tree) and connect to the database via sockets.
