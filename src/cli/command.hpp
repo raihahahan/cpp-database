@@ -1,8 +1,9 @@
 #include "../db/database.hpp"
 #include <iostream>
+#include <string>
 
 struct Command {
-    virtual void execute(Database& db) = 0;
+    virtual std::string execute(Database& db) = 0;
     virtual ~Command() = default;
 };
 
@@ -11,8 +12,9 @@ public:
     PutCommand(std::string key, std::string value)
         : key_(std::move(key)), value_(std::move(value)) {}
 
-    void execute(Database& db) override {
+    std::string execute(Database& db) override {
         db.put(key_, value_);
+        return "Inserted " + key_ + ": " + value_ + "\n";
     }
 
 private:
@@ -24,19 +26,21 @@ class GetCommand : public Command {
 public:
     GetCommand(std::string key) : key_(std::move(key)) {}
 
-    void execute(Database& db) override {
+    std::string execute(Database& db) override {
+        std::string res;
         if (key_ == "all") {
             auto result = db.getRange(-1);
             for (const auto& [key, val] : result) {
+                res += key + ": " + val + "\n";
                 std::cout << key << ": " << val << "\n";
             }
-            return;
+            return res;
         }
         auto result = db.get(key_);
         if (result) {
-            std::cout << key_ << ": " << *result << "\n";
+            return key_ + ": " + *result + "\n";
         } else {
-            std::cout << key_ << " not found\n";
+            return key_ + " not found\n";
         }
     }
 
@@ -48,8 +52,9 @@ class RemoveCommand : public Command {
 public:
     RemoveCommand(std::string key) : key_(std::move(key)) {}
 
-    void execute(Database& db) override {
+    std::string execute(Database& db) override {
         db.remove(key_);
+        return "OK\n";
     }
 
 private:

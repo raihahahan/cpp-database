@@ -12,7 +12,8 @@ class LSMEngine : public StorageEngine {
 public:
     LSMEngine(std::optional<std::filesystem::path> walPath = std::nullopt, 
                 const size_t threshold = LSM_FLUSH_THRESHOLD,
-                const int compactionInterval = LSM_COMPACTION_INTERVAL_MS);
+                const int compactionInterval = LSM_COMPACTION_INTERVAL_MS,
+                const std::string ssTableDir = SSTABLE_DIR);
     ~LSMEngine();
 
     void put(const std::string& key, const std::string& value) override;

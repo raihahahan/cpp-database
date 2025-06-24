@@ -5,9 +5,11 @@
 
 #include <filesystem>
 #include <cstdio>
+#include <string>
 
 TEST_CASE("[Compaction]: works in background thread") {
-    std::filesystem::remove_all(SSTABLE_DIR);
+    std::string testSStableDir = "data/segments";
+    std::filesystem::remove_all(testSStableDir);
 
     LSMEngine engine("./wal", 5, 5000);
 
@@ -21,7 +23,7 @@ TEST_CASE("[Compaction]: works in background thread") {
 
     // expect only 1 segment file to remain after compaction
     int datFiles = 0;
-    for (const auto& entry : std::filesystem::directory_iterator(SSTABLE_DIR)) {
+    for (const auto& entry : std::filesystem::directory_iterator(testSStableDir)) {
         if (entry.path().extension() == ".dat") datFiles++;
     }
 

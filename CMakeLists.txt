@@ -13,5 +13,7 @@ if(ENABLE_TESTING)
 endif()
 add_executable(db_cli src/cli/main.cpp)
 target_link_libraries(db_cli PRIVATE db_core)
+add_executable(db_main src/main.cpp)
+target_link_libraries(db_main PRIVATE db_core)
 add_subdirectory(src)
 

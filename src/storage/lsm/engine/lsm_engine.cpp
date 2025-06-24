@@ -7,11 +7,12 @@
 
 LSMEngine::LSMEngine(std::optional<std::filesystem::path> walPath,
                         const size_t threshold,
-                        const int compactionInterval) : 
+                        const int compactionInterval,
+                        std::string sstableDir) : 
                     wal(std::move(walPath)), 
                     FLUSH_THRESHOLD(threshold),
                     COMPACTION_INTERVAL_MS(compactionInterval) {
-    segmentManager.loadSegments(SSTABLE_DIR);
+    segmentManager.loadSegments(sstableDir);
     wal.replay([this](const WalRecord& rec) {
         switch (rec.opType)
         {
