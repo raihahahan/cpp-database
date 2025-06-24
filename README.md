@@ -2,11 +2,11 @@
 The aim of this project is to build a durable key-value database supporting two different storage engines: LSM-tree and B-tree.
 
 ## Current Progress and Features
-### LSM-tree version (current work in progress)
+### LSM-tree version ✅
 
 1. Memtable with skiplist ✅
 2. Periodic flush to disk with segments of SSTables ✅
-3. Periodic compaction to merge the SSTable segments
+3. Periodic compaction to merge the SSTable segments ✅
 
 ### B-tree version (pending)
 
