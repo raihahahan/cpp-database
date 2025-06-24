@@ -147,11 +147,10 @@ public:
     }
 
     // returns all key-value pairs in sorted order.
-    std::vector<std::pair<K, V>> entries(int limit = -1) const {
+    std::vector<std::pair<K, V>> entries() const {
         std::vector<std::pair<K, V>> result;
         auto curr = head->forward[0];
         while (curr) {
-            if (limit > 0 && result.size() == limit) break;
             result.emplace_back(curr->key, curr->value);
             curr = curr->forward[0];
         }

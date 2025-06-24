@@ -1,5 +1,6 @@
 #include "segment_manager.hpp"
 #include "../../../config.hpp"
+#include "../../../common/utils/file_utils.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -117,10 +118,12 @@ void SegmentManager::compact() {
     // 1. read all entries from indexMap
     auto allEntries = getRange();
 
-    // 2. sort and deduplicate by key, keeping latest (rightmost) entry
-    std::map<std::string, std::string> latest;  // overwrites duplicates
+    // 2. deduplicate keys (latest wins), but skip tombstones
+    std::map<std::string, std::string> latest;
     for (const auto& [key, value] : allEntries) {
-        latest[key] = value;
+        if (!isTombstone(value)) {
+            latest[key] = value;
+        }
     }
 
     // 3. write to new compacted segment
@@ -133,9 +136,8 @@ void SegmentManager::compact() {
         return;
     }
 
-    // 4. rebuild new index map
-    indexMap.clear(); 
-
+    // 4. rebuild index map with only non-deleted entries
+    indexMap.clear();
     for (const auto& [key, value] : latest) {
         std::streampos offset = out.tellp();
 
@@ -152,13 +154,13 @@ void SegmentManager::compact() {
 
     out.close();
 
-    // 5. delete all old segment files
+    // 5. delete all old segment files except new compacted one
     for (const auto& entry : std::filesystem::directory_iterator(segmentDir)) {
         if (entry.path() != compactedPath && entry.path().extension() == ".dat") {
             std::filesystem::remove(entry.path());
         }
     }
 
-    std::cout << "[Compaction] Finished. Compacted into " << compactedPath << " with "
-              << latest.size() << " entries.\n";
+    std::cout << "[Compaction] Finished. Compacted into " << compactedPath
+              << " with " << latest.size() << " live entries.\n";
 }
